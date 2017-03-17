@@ -1,0 +1,14 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "standard"
+  ],
+  "plugins": [
+    "babel",
+    "promise"
+  ],
+  "rules": {
+    "key-spacing"          : 0,
+    "object-curly-spacing" : [2, "always"]
+  }
+}

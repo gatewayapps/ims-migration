@@ -1,0 +1,11 @@
+paths:
+  functions: './functions'
+  preDeploy: './preDeploy'
+  procedures: './procedures'
+  postDeploy: './postDeploy'
+  migrations: './migrations'
+  views: './views'
+
+preDeploy: []
+postDeploy: []
+steps: []
