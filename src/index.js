@@ -1,7 +1,5 @@
-#!/usr/bin/env node
-import yargs from 'yargs'
+import { publish } from './publish'
 
-export const argv = yargs.commandDir('cmds')
-  .demandCommand()
-  .help()
-  .argv
+export default {
+  publish
+}

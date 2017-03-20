@@ -1,10 +1,11 @@
-export const TypePaths = {
-  Function: 'functions',
-  Migration: 'migrations',
-  PreDeploy: 'preDeploy',
-  PostDeploy: 'postDeploy',
-  Procedure: 'procedures',
-  View: 'views'
+export const Replacements = {
+  DatabaseName: /{{DatabaseName}}/g,
+  ObjectName: /{{ObjectName}}/g,
+  ScriptName: /{{ScriptName}}/g
+}
+
+export const Scripts = {
+  CreateDatabase: 'createDatabase.sql'
 }
 
 export const Templates = {
@@ -17,7 +18,11 @@ export const Templates = {
   View: 'view.sql'
 }
 
-export const Replacements = {
-  ObjectName: /{{ObjectName}}/g,
-  ScriptName: /{{ScriptName}}/g
+export const TypePaths = {
+  Function: 'functions',
+  Migration: 'migrations',
+  PreDeploy: 'preDeploy',
+  PostDeploy: 'postDeploy',
+  Procedure: 'procedures',
+  View: 'views'
 }
