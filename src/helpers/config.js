@@ -2,8 +2,9 @@ import path from 'path'
 import fs from 'fs-extra'
 import yaml from 'js-yaml'
 
-export function loadConfig () {
-  const configFile = path.resolve('migration.yaml')
+export function loadConfig (configPath) {
+  configPath = configPath || 'migration.yaml'
+  const configFile = path.resolve(configPath)
   return yaml.safeLoad(fs.readFileSync(configFile))
 }
 

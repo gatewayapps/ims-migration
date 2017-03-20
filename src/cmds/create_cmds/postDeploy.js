@@ -1,4 +1,4 @@
-import { createPostDeploy } from '../../helpers/createHelper'
+import { createPostDeploy } from '../../helpers/create'
 
 export const command = 'postDeploy <name>'
 

@@ -1,4 +1,4 @@
-import { createProcedure } from '../../helpers/createHelper'
+import { createProcedure } from '../../helpers/create'
 
 export const command = 'procedure <name>'
 

@@ -1,4 +1,4 @@
-import { createPreDeploy } from '../../helpers/createHelper'
+import { createPreDeploy } from '../../helpers/create'
 
 export const command = 'preDeploy <name>'
 

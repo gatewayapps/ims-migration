@@ -1,4 +1,4 @@
-import { createMigration } from '../../helpers/createHelper'
+import { createMigration } from '../../helpers/create'
 
 export const command = 'migration <name>'
 

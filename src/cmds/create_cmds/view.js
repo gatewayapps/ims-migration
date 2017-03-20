@@ -1,4 +1,4 @@
-import { createView } from '../../helpers/createHelper'
+import { createView } from '../../helpers/create'
 
 export const command = 'view <name>'
 

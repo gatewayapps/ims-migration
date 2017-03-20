@@ -1,4 +1,4 @@
-import { createScalarFunction, createTableFunction } from '../../helpers/createHelper'
+import { createScalarFunction, createTableFunction } from '../../helpers/create'
 
 export const command = 'function <name> [type]'
 

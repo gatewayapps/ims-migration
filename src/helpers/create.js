@@ -5,7 +5,7 @@ import {
   addPreDeployScript,
   addPostDeployScript,
   addMigration
-} from './configHelper'
+} from './config'
 import { Templates, Replacements, TypePaths } from '../constants'
 
 export function createScalarFunction (name) {
