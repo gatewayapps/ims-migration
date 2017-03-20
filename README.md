@@ -1,2 +1,2 @@
 # IMS Migration
-This is a database migration tool for SQL Server databases
+Database migration tooling for SQL Server databases
