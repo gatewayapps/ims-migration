@@ -8,4 +8,4 @@ paths:
 
 preDeploy: []
 postDeploy: []
-steps: []
+migrations: []

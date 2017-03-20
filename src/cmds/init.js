@@ -47,6 +47,6 @@ export function handler (argv) {
     views: path.relative(root, viewsDir)
   }
 
-  fs.writeFileSync(path.join(root, 'migrations.yaml'), yaml.safeDump(migrationConfig))
+  fs.writeFileSync(path.join(root, 'migration.yaml'), yaml.safeDump(migrationConfig))
   console.log('created migrations.yaml configuration file')
 }
