@@ -1,6 +1,6 @@
 {
   "name": "ims-migration",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Utility for orchestraing database migrations",
   "babel": {
     "presets": [
@@ -15,6 +15,7 @@
     "prebuild": "npm run clean",
     "build": "babel src --out-dir dist",
     "clean": "rimraf dist",
+    "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Justin Neff <justin@gatewayapps.com> (http://www.gatewayapps.com)",
