@@ -25,6 +25,12 @@ export function loadScriptAsset (scriptName) {
   return fs.readFileSync(filePath, { encoding: 'utf8' })
 }
 
+export function splitBatches (scriptText) {
+  return scriptText.split(/\nGO|go\b/)
+    .map((b) => b.trim())
+    .filter((b) => b.length > 0)
+}
+
 function loadMigrationScript (scriptFile) {
   const filePath = path.resolve(scriptFile)
   return fs.readFileSync(filePath, { encoding: 'utf8' })

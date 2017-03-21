@@ -7,6 +7,12 @@ import {
   runPreDeploymentScripts
 } from './preDeployment'
 import { runMigrations } from './migration'
+import {
+  runFunctions,
+  runProcedures,
+  runViews
+} from './databaseObjects'
+import { runPostDeploymentScripts } from './postDeployment'
 import { MigrationStatus } from '../constants'
 
 export function publish (config) {
@@ -23,6 +29,10 @@ export function publish (config) {
           .then(() => createPackageDatabaseUserIfNotExists(db, replacements))
           .then(() => runPreDeploymentScripts(db, migrationConfig, replacements))
           .then(() => runMigrations(db, migrationConfig, replacements))
+          .then(() => runFunctions(db, migrationConfig, replacements))
+          .then(() => runViews(db, migrationConfig, replacements))
+          .then(() => runProcedures(db, migrationConfig, replacements))
+          .then(() => runPostDeploymentScripts(db, migrationConfig, replacements))
           .then(() => onMigrationSuccess(db))
       })
       .catch((error) => onMigrationFailure(db, error))

@@ -5,7 +5,8 @@ import Database from '../helpers/database'
 import { onMigrationScriptError } from '../helpers/migration'
 import {
   loadAndBuildMigrationScript,
-  loadAndBuildScriptAsset
+  loadAndBuildScriptAsset,
+  splitBatches
 } from '../helpers/script'
 import {
   Scripts
@@ -37,8 +38,9 @@ export function runPreDeploymentScripts (db, migrationConfig, replacements) {
 
   return Promise.each(migrationConfig.preDeploy, (step) => {
     const scriptFile = path.join(migrationConfig.paths.preDeploy, `${step}.sql`)
-    const sqlScript = loadAndBuildMigrationScript(scriptFile)
-    return db.runRawQuery(sqlScript)
-      .catch((error) => onMigrationScriptError(error, scriptFile))
+    const sqlScript = loadAndBuildMigrationScript(scriptFile, replacements)
+    const batches = splitBatches(sqlScript)
+    return Promise.each(batches, (batchText) => db.runRawQuery(batchText))
+      .catch((error) => onMigrationScriptError(error, step))
   })
 }

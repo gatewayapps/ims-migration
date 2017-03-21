@@ -4,7 +4,7 @@ export default class MigrationError extends Error {
     Error.captureStackTrace(this, this.constructor)
     this.name = 'MigrationError'
     this.message = message
-    this.migrationScript = script
+    this.scriptName = script
     this.rootError = innerEx
   }
 }

@@ -1,7 +1,10 @@
 import Promise from 'bluebird'
 import path from 'path'
 import { onMigrationScriptError } from '../helpers/migration'
-import { loadAndBuildMigrationScript } from '../helpers/script'
+import {
+  loadAndBuildMigrationScript,
+  splitBatches
+} from '../helpers/script'
 
 export function runMigrations (db, migrationConfig, replacements) {
   if (!Array.isArray(migrationConfig.migrations) || migrationConfig.migrations.length === 0) {
@@ -32,7 +35,8 @@ function createMigrationRunner (db, migrationsPath, replacements) {
   return (migration) => {
     const scriptFile = path.join(migrationsPath, `${migration}.sql`)
     const sqlScript = loadAndBuildMigrationScript(scriptFile, replacements)
-    return db.runRawQuery(sqlScript)
+    const batches = splitBatches(sqlScript)
+    return Promise.each(batches, (batchText) => db.runRawQuery(batchText))
       .then(() => {
         return db.Migration.create({
           migration: migration
