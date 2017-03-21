@@ -8,7 +8,7 @@ import {
 } from '../helpers/script'
 
 export function runFunctions (db, migrationConfig, replacements) {
-  return runScripts(db, migrationConfig.paths.functions, replacements)  
+  return runScripts(db, migrationConfig.paths.functions, replacements)
 }
 
 export function runProcedures (db, migrationConfig, replacements) {
