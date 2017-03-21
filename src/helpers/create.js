@@ -67,7 +67,9 @@ function loadTemplate (templateName) {
 }
 
 function writeFile (fileName, type, content) {
-  const writePath = path.join(getTypePath(type), fileName)
+  const dirPath = getTypePath(type)
+  fs.ensureDirSync(dirPath)
+  const writePath = path.join(dirPath, fileName)
   fs.writeFileSync(writePath, content)
   console.log(`Created file: ${writePath}`)
 }
