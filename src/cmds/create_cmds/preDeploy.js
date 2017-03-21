@@ -1,8 +1,8 @@
 import { createPreDeploy } from '../../helpers/create'
 
-export const command = 'preDeploy <name>'
+export const command = 'pre-deploy <name>'
 
-export const aliases = [ 'pre', 'predeploy', 'pre-deploy' ]
+export const aliases = [ 'pre', 'predeploy', 'preDeploy' ]
 
 export const desc = 'Create a new pre-deployment script'
 

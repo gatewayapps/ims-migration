@@ -1,8 +1,8 @@
 import { createPostDeploy } from '../../helpers/create'
 
-export const command = 'postDeploy <name>'
+export const command = 'post-deploy <name>'
 
-export const aliases = [ 'post', 'postdeploy', 'post-deploy' ]
+export const aliases = [ 'post', 'postdeploy', 'postDeploy' ]
 
 export const desc = 'Create a new post-deployment script'
 
