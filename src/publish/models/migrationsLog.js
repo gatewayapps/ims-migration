@@ -16,11 +16,15 @@ module.exports = (DataTypes, context) => {
       allowNull: false
     },
     message: {
-      type: DataTypes.STRING('MAX'),
+      type: DataTypes.STRING(1000),
       allowNull: false
     },
     migration: {
       type: DataTypes.STRING(1000),
+      allowNull: true
+    },
+    details: {
+      type: DataTypes.STRING('MAX'),
       allowNull: true
     }
   }, {

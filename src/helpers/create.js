@@ -6,36 +6,36 @@ import {
   addPostDeployScript,
   addMigration
 } from './config'
-import { Templates, Replacements, TypePaths } from '../constants'
+import { Templates, TemplateReplacements, TypePaths } from '../constants'
 
 export function createScalarFunction (name) {
   let template = loadTemplate(Templates.ScalarFunction)
-  template = template.replace(Replacements.ObjectName, name)
+  template = template.replace(TemplateReplacements.ObjectName, name)
   writeFile(`${name}.sql`, TypePaths.Function, template)
 }
 
 export function createTableFunction (name) {
   let template = loadTemplate(Templates.TableFunction)
-  template = template.replace(Replacements.ObjectName, name)
+  template = template.replace(TemplateReplacements.ObjectName, name)
   writeFile(`${name}.sql`, TypePaths.Function, template)
 }
 
 export function createProcedure (name) {
   let template = loadTemplate(Templates.Procedure)
-  template = template.replace(Replacements.ObjectName, name)
+  template = template.replace(TemplateReplacements.ObjectName, name)
   writeFile(`${name}.sql`, TypePaths.Procedure, template)
 }
 
 export function createView (name) {
   let template = loadTemplate(Templates.View)
-  template = template.replace(Replacements.ObjectName, name)
+  template = template.replace(TemplateReplacements.ObjectName, name)
   writeFile(`${name}.sql`, TypePaths.View, template)
 }
 
 export function createPreDeploy (name) {
   const scriptName = getScriptName(name)
   let template = loadTemplate(Templates.PreDeploy)
-  template = template.replace(Replacements.ScriptName, scriptName)
+  template = template.replace(TemplateReplacements.ScriptName, scriptName)
   writeFile(`${scriptName}.sql`, TypePaths.PreDeploy, template)
   addPreDeployScript(scriptName)
 }
@@ -43,7 +43,7 @@ export function createPreDeploy (name) {
 export function createPostDeploy (name) {
   const scriptName = getScriptName(name)
   let template = loadTemplate(Templates.PostDeploy)
-  template = template.replace(Replacements.ScriptName, scriptName)
+  template = template.replace(TemplateReplacements.ScriptName, scriptName)
   writeFile(`${scriptName}.sql`, TypePaths.PostDeploy, template)
   addPostDeployScript(scriptName)
 }
@@ -51,7 +51,7 @@ export function createPostDeploy (name) {
 export function createMigration (name) {
   const scriptName = getScriptName(name)
   let template = loadTemplate(Templates.Migration)
-  template = template.replace(Replacements.ScriptName, scriptName)
+  template = template.replace(TemplateReplacements.ScriptName, scriptName)
   writeFile(`${scriptName}.sql`, TypePaths.Migration, template)
   addMigration(scriptName)
 }

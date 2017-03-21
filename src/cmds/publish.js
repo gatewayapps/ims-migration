@@ -55,9 +55,10 @@ export function handler (argv) {
       logging: argv.verbose
     },
     packageLogin: {
-      user: argv.packageLogin,
+      username: argv.packageLogin,
       password: argv.packagePassword
     },
+    replacements: {},
     logging: argv.verbose
   }
   publish(publishConfig)

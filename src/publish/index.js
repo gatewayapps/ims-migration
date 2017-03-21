@@ -1,27 +1,63 @@
 import { loadConfig } from '../helpers/config'
 import DbContext from './dbContext'
-import { createDatabaseIfNotExists } from './master'
+import {
+  createDatabaseIfNotExists,
+  createPackageLoginIfNotExists,
+  createPackageDatabaseUserIfNotExists,
+  runPreDeploymentScripts
+} from './preDeployment'
+import { MigrationStatus } from '../constants'
 
 export function publish (config) {
-  console.log('Publishing with configuration: ', JSON.stringify(config, null, 2))
-
   const migrationConfig = loadConfig(config.migrationFile)
+  const replacements = buildReplacements(config)
 
-  console.log('Migration Config: ', JSON.stringify(migrationConfig, null, 2))
-  return createDatabaseIfNotExists(config.database)
+  console.log('Starting database migration')
+  return createDatabaseIfNotExists(config.database, replacements)
     .then(() => createDatabaseContext(config.database))
+    .then((db) => { return db.context.sync().then(() => db) })
     .then((db) => {
       return db.context.transaction((trx) => {
-        return db.context.sync()
-          .then(() => console.log('database synced'))
+        return createPackageLoginIfNotExists(db, replacements)
+          .then(() => createPackageDatabaseUserIfNotExists(db, replacements))
+          .then(() => runPreDeploymentScripts(db, migrationConfig, replacements))
+          .then(() => onMigrationSuccess(db))
       })
+      .catch((error) => onMigrationFailure(db, error))
     })
+}
+
+function buildReplacements (config) {
+  const replacements = {
+    DatabaseName: config.database.databaseName,
+    PackageLoginUsername: config.packageLogin.username,
+    PackageLoginPassword: config.packageLogin.password
+  }
+
+  if (typeof config.replacements === 'object') {
+    Object.assign(replacements, config.replacements)
+  }
+
+  return replacements
 }
 
 function createDatabaseContext (databaseConfig) {
   return new DbContext(databaseConfig)
 }
 
-function createPackageLoginIfNotExists (db, databaseName, loginUsername, loginPassword) {
-  
+function onMigrationSuccess (db) {
+  return db.MigrationsLog.create({
+    status: MigrationStatus.Success,
+    message: 'Migration completed successfully.'
+  })
+}
+
+function onMigrationFailure (db, error) {
+  console.error(error)
+  return db.MigrationsLog.create({
+    status: MigrationStatus.Failed,
+    message: error.message,
+    migration: error.scriptName,
+    details: JSON.stringify(error)
+  })
 }

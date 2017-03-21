@@ -13,7 +13,7 @@ export default class DbContext {
     this.context = new Database(lConfig)
 
     this.Migration = require('./models/migration')(Sequelize, this.context)
-    this.MigrationLog = require('./models/migrationsLog')(Sequelize, this.context)
+    this.MigrationsLog = require('./models/migrationsLog')(Sequelize, this.context)
   }
 
   runRawQuery (queryText) {

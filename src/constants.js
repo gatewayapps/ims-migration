@@ -1,11 +1,17 @@
-export const Replacements = {
-  DatabaseName: /{{DatabaseName}}/g,
-  ObjectName: /{{ObjectName}}/g,
-  ScriptName: /{{ScriptName}}/g
+export const MigrationStatus = {
+  Success: 0,
+  Failed: 1
 }
 
 export const Scripts = {
-  CreateDatabase: 'createDatabase.sql'
+  CreateDatabase: 'createDatabase.sql',
+  CreatePackageDatabaseUser: 'createPackageDatabaseUser.sql',
+  CreatePackageLogin: 'createPackageLogin.sql'
+}
+
+export const TemplateReplacements = {
+  ObjectName: /{{ObjectName}}/g,
+  ScriptName: /{{ScriptName}}/g
 }
 
 export const Templates = {
