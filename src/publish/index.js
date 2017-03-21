@@ -6,6 +6,7 @@ import {
   createPackageDatabaseUserIfNotExists,
   runPreDeploymentScripts
 } from './preDeployment'
+import { runMigrations } from './migration'
 import { MigrationStatus } from '../constants'
 
 export function publish (config) {
@@ -21,6 +22,7 @@ export function publish (config) {
         return createPackageLoginIfNotExists(db, replacements)
           .then(() => createPackageDatabaseUserIfNotExists(db, replacements))
           .then(() => runPreDeploymentScripts(db, migrationConfig, replacements))
+          .then(() => runMigrations(db, migrationConfig, replacements))
           .then(() => onMigrationSuccess(db))
       })
       .catch((error) => onMigrationFailure(db, error))
