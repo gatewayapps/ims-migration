@@ -33,19 +33,17 @@ export function createView (name) {
 }
 
 export function createPreDeploy (name) {
-  const scriptName = getScriptName(name)
   let template = loadTemplate(Templates.PreDeploy)
-  template = template.replace(TemplateReplacements.ScriptName, scriptName)
-  writeFile(`${scriptName}.sql`, TypePaths.PreDeploy, template)
-  addPreDeployScript(scriptName)
+  template = template.replace(TemplateReplacements.ScriptName, name)
+  writeFile(`${name}.sql`, TypePaths.PreDeploy, template)
+  addPreDeployScript(name)
 }
 
 export function createPostDeploy (name) {
-  const scriptName = getScriptName(name)
   let template = loadTemplate(Templates.PostDeploy)
-  template = template.replace(TemplateReplacements.ScriptName, scriptName)
-  writeFile(`${scriptName}.sql`, TypePaths.PostDeploy, template)
-  addPostDeployScript(scriptName)
+  template = template.replace(TemplateReplacements.ScriptName, name)
+  writeFile(`${name}.sql`, TypePaths.PostDeploy, template)
+  addPostDeployScript(name)
 }
 
 export function createMigration (name) {

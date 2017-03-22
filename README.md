@@ -87,7 +87,7 @@ Pre-Deploy scripts are run before migrations each time the migration is publishe
 ims-migration create pre-deploy my-pre-deploy
 ```
 
-This will create a file named ```{timestamp}-my-pre-deploy.sql``` in [directory]/preDeploy and add ```{timestamp}-my-pre-deploy``` to the end of the preDeploy array in the ```migrations.yaml``` file. 
+This will create a file named ```my-pre-deploy.sql``` in [directory]/preDeploy and add ```my-pre-deploy``` to the end of the preDeploy array in the ```migrations.yaml``` file. 
 
 The pre-deploy scripts are re-run every time the migration is published. The scripts should be written in a way that it supports begin run multiple times without creating errors.
 
@@ -98,6 +98,6 @@ Post-Deploy scripts are run after migrations, functions, views and procedures ea
 ims-migration create post-deploy my-post-deploy
 ```
 
-This will create a file named ```{timestamp}-my-post-deploy.sql``` in [directory]/postDeploy and add ```{timestamp}-my-post-deploy``` to the end of the postDeploy array in the ```migrations.yaml``` file. 
+This will create a file named ```my-post-deploy.sql``` in [directory]/postDeploy and add ```my-post-deploy``` to the end of the postDeploy array in the ```migrations.yaml``` file. 
 
 The pre-deploy scripts are re-run every time the migration is published. The scripts should be written in a way that it supports begin run multiple times without creating errors.
