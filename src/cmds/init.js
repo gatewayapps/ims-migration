@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 import yaml from 'js-yaml'
+import logger from '../helpers/logging'
 
 export const command = 'init [dir]'
 
@@ -26,17 +27,17 @@ export function handler (argv) {
   const viewsDir = path.join(dirPath, 'views')
 
   fs.ensureDirSync(functionsDir)
-  console.log('created functions directory')
+  logger.log('created functions directory')
   fs.ensureDirSync(postDeployDir)
-  console.log('created postDeploy directory')
+  logger.log('created postDeploy directory')
   fs.ensureDirSync(preDeployDir)
-  console.log('created preDeploy directory')
+  logger.log('created preDeploy directory')
   fs.ensureDirSync(proceduresDir)
-  console.log('created procedures directory')
+  logger.log('created procedures directory')
   fs.ensureDirSync(migrationsDir)
-  console.log('created migrations directory')
+  logger.log('created migrations directory')
   fs.ensureDirSync(viewsDir)
-  console.log('created views directory')
+  logger.log('created views directory')
 
   migrationConfig.paths = {
     functions: path.relative(root, functionsDir),
@@ -48,5 +49,5 @@ export function handler (argv) {
   }
 
   fs.writeFileSync(path.join(root, 'migration.yaml'), yaml.safeDump(migrationConfig))
-  console.log('created migrations.yaml configuration file')
+  logger.log('created migrations.yaml configuration file')
 }

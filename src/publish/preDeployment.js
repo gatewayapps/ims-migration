@@ -11,6 +11,7 @@ import {
 import {
   Scripts
 } from '../constants'
+import logger from '../helpers/logging'
 
 export function createDatabaseIfNotExists (databaseConfig, replacements) {
   const master = new Database(databaseConfig, 'master')
@@ -35,12 +36,12 @@ export function runPreDeploymentScripts (db, migrationConfig, replacements) {
   if (!Array.isArray(migrationConfig.preDeploy) || migrationConfig.preDeploy.length === 0) {
     return Promise.resolve()
   }
-  console.log('Starting pre-deployment')
+  logger.status('Starting pre-deployment')
   return Promise.each(migrationConfig.preDeploy, (step) => {
     const scriptFile = path.join(migrationConfig.paths.preDeploy, `${step}.sql`)
     const sqlScript = loadAndBuildMigrationScriptSync(scriptFile, replacements)
     const batches = splitBatches(sqlScript)
-    console.log(`Running pre-deployment script ${step}`)
+    logger.status(`Running pre-deployment script ${step}`)
     return Promise.each(batches, (batchText) => db.runRawQuery(batchText))
       .catch((error) => onMigrationScriptError(error, step))
   })

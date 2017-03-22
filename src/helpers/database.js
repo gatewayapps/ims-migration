@@ -1,4 +1,5 @@
 import Sequelize from 'sequelize'
+import logger from './logging'
 
 const instances = {}
 
@@ -30,7 +31,7 @@ export default function (config, databaseNameOverride) {
       define: {
         timestamps: false
       },
-      logging: config.logging ? console.log : false
+      logging: config.logging ? logger.status : false
     }
 
     instances[dbName] = new Sequelize(dbName, config.username, config.password, sequelizeConfig)
@@ -39,7 +40,7 @@ export default function (config, databaseNameOverride) {
   instances[dbName].authenticate()
     .then(() => {
       if (config.logging) {
-        console.log(`${dbName} connected`)
+        logger.status(`${dbName} connected`)
       }
     })
 

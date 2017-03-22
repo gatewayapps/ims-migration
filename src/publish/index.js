@@ -1,4 +1,5 @@
 import { loadConfig } from '../helpers/config'
+import logger from '../helpers/logging'
 import DbContext from './dbContext'
 import {
   createDatabaseIfNotExists,
@@ -17,7 +18,7 @@ export function publish (config) {
   const migrationConfig = loadConfig(config.migrationFile)
   const replacements = buildReplacements(config)
 
-  console.log('Starting database migration')
+  logger.status('Starting database migration')
   return createDatabaseIfNotExists(config.database, replacements)
     .then(() => createDatabaseContext(config.database))
     .then((db) => { return db.context.sync().then(() => db) })
@@ -54,15 +55,16 @@ function createDatabaseContext (databaseConfig) {
 }
 
 function onMigrationSuccess (db) {
-  console.log('Database migration complete')
   return db.MigrationsLog.create({
     status: MigrationStatus.Success,
     message: 'Migration completed successfully.'
+  }).then(() => {
+    logger.success('Database migration complete')
   })
 }
 
 function onMigrationFailure (db, error) {
-  console.error(error)
+  logger.error(error)
   return db.MigrationsLog.create({
     status: MigrationStatus.Failed,
     message: error.message,

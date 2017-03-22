@@ -1,6 +1,6 @@
 {
   "name": "ims-migration",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Utility for orchestraing database migrations",
   "babel": {
     "presets": [
@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "bluebird": "^3.5.0",
+    "cli-colors": "0.0.2",
     "continuation-local-storage": "^3.2.0",
     "fs-extra": "^2.1.2",
     "js-yaml": "^3.8.2",

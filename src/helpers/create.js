@@ -7,6 +7,7 @@ import {
   addMigration
 } from './config'
 import { Templates, TemplateReplacements, TypePaths } from '../constants'
+import logger from '../helpers/logging'
 
 export function createScalarFunction (name) {
   let template = loadTemplate(Templates.ScalarFunction)
@@ -74,5 +75,5 @@ function writeFile (fileName, type, content) {
   }
 
   fs.writeFileSync(writePath, content)
-  console.log(`Created file: ${writePath}`)
+  logger.log(`Created file: ${writePath}`)
 }

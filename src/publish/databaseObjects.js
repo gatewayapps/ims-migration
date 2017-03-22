@@ -5,6 +5,7 @@ import {
   loadAndBuildMigrationScript,
   splitBatches
 } from '../helpers/script'
+import logger from '../helpers/logging'
 
 const fs = Promise.promisifyAll(require('fs-extra'))
 
@@ -49,7 +50,7 @@ function getScriptFiles (dirPath, replacements) {
 
 function resolveScriptDependencies (functions, procedures, views) {
   const allScripts = functions.concat(procedures).concat(views)
-  console.log('Resolving script dependencies')
+  logger.status('Resolving script dependencies')
   const objectNames = allScripts.filter((s) => s.objectName).map((s) => s.objectName)
 
   // identify the dependent objects for each script
@@ -97,7 +98,7 @@ function createScriptRunner (db) {
   return (script) => {
     const baseName = path.basename(script.filePath, '.sql')
     const batches = splitBatches(script.text)
-    console.log(`Running database object script ${baseName}`)
+    logger.status(`Running database object script ${baseName}`)
     return Promise.each(batches, (batchText) => db.runRawQuery(batchText))
       .catch((error) => onMigrationScriptError(error, baseName))
   }
