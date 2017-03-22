@@ -68,6 +68,11 @@ function writeFile (fileName, type, content) {
   const dirPath = getTypePath(type)
   fs.ensureDirSync(dirPath)
   const writePath = path.join(dirPath, fileName)
+
+  if (fs.existsSync(writePath)) {
+    throw new Error('File already exists')
+  }
+
   fs.writeFileSync(writePath, content)
   console.log(`Created file: ${writePath}`)
 }
