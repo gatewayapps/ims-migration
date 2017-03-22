@@ -15,7 +15,7 @@ export const builder = {
   },
   instance: {
     alias: [ 'i' ],
-    default: ''
+    default: 'MSSQLSERVER'
   },
   database: {
     alias: [ 'd' ],
