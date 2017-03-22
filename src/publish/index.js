@@ -58,6 +58,7 @@ function createDatabaseContext (databaseConfig) {
 }
 
 function onMigrationSuccess (db) {
+  console.log('Database migration complete')
   return db.MigrationsLog.create({
     status: MigrationStatus.Success,
     message: 'Migration completed successfully.'

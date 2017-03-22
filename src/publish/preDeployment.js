@@ -35,11 +35,12 @@ export function runPreDeploymentScripts (db, migrationConfig, replacements) {
   if (!Array.isArray(migrationConfig.preDeploy) || migrationConfig.preDeploy.length === 0) {
     return Promise.resolve()
   }
-
+  console.log('Starting pre-deployment')
   return Promise.each(migrationConfig.preDeploy, (step) => {
     const scriptFile = path.join(migrationConfig.paths.preDeploy, `${step}.sql`)
     const sqlScript = loadAndBuildMigrationScript(scriptFile, replacements)
     const batches = splitBatches(sqlScript)
+    console.log(`Running pre-deployment script ${step}`)
     return Promise.each(batches, (batchText) => db.runRawQuery(batchText))
       .catch((error) => onMigrationScriptError(error, step))
   })
