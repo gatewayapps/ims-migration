@@ -1,5 +1,4 @@
 import Promise from 'bluebird'
-import fs from 'fs-extra'
 import path from 'path'
 import { onMigrationScriptError } from '../helpers/migration'
 import {
@@ -7,45 +6,97 @@ import {
   splitBatches
 } from '../helpers/script'
 
-export function runFunctions (db, migrationConfig, replacements) {
-  console.log('Start applying functions')
-  return runScripts(db, migrationConfig.paths.functions, replacements)
+const fs = Promise.promisifyAll(require('fs-extra'))
+
+const CREATABLE_NAME_PATTERN = /CREATE\s+(FUNCTION|PROCEDURE|VIEW)\s+(\[.+\]|[\w.]+\b)/
+
+export function runDatabaseObjects (db, migrationConfig, replacements) {
+  return Promise.all([
+    getScriptFiles(migrationConfig.paths.functions, replacements),
+    getScriptFiles(migrationConfig.paths.procedures, replacements),
+    getScriptFiles(migrationConfig.paths.views, replacements)
+  ])
+  .spread(resolveScriptDependencies)
+  .each(createScriptRunner(db))
 }
 
-export function runProcedures (db, migrationConfig, replacements) {
-  console.log('Start applying procedures')
-  return runScripts(db, migrationConfig.paths.procedures, replacements)
+function getScriptFiles (dirPath, replacements) {
+  const fullPath = path.resolve(dirPath)
+  return fs.readdirAsync(fullPath)
+    .filter((f) => /.sql/.test(f))
+    .map((f) => {
+      const fullFilePath = path.join(fullPath, f)
+      return loadAndBuildMigrationScript(fullFilePath, replacements)
+        .then((scriptText) => {
+          const script = {
+            objectName: undefined,
+            filePath: fullFilePath,
+            text: scriptText,
+            dependencies: []
+          }
+
+          // Extract creatable objectName from scriptText
+          const re = new RegExp(CREATABLE_NAME_PATTERN, 'i')
+          const match = re.exec(scriptText)
+          if (match && match.length >= 3) {
+            const nameParts = match[2].split('.')
+            script.objectName = nameParts.pop().trim().replace('[', '').replace(']', '')
+          }
+          return script
+        })
+    })
 }
 
-export function runViews (db, migrationConfig, replacements) {
-  console.log('Start applying views')
-  return runScripts(db, migrationConfig.paths.views, replacements)
+function resolveScriptDependencies (functions, procedures, views) {
+  const allScripts = functions.concat(procedures).concat(views)
+  console.log('Resolving script dependencies')
+  const objectNames = allScripts.filter((s) => s.objectName).map((s) => s.objectName)
+
+  // identify the dependent objects for each script
+  allScripts.forEach((script) => {
+    script.dependencies = objectNames.filter((oName) => {
+      return script.objectName !== oName && new RegExp(`\\.?\\[?${oName}`).test(script.text)
+    })
+  })
+  return orderScripts(allScripts)
 }
 
-function runScripts (db, scriptPath, replacements) {
-  const files = getScriptFiles(scriptPath)
-
-  if (files.length === 0) {
-    return Promise.resolve()
+function orderScripts (scripts, orderedScripts = []) {
+  if (scripts.length === 0) {
+    return orderedScripts
   }
 
-  const scriptRunner = createScriptRunner(db, replacements)
+  const initialValue = {
+    ordered: orderedScripts,
+    remaining: []
+  }
 
-  return Promise.each(files, scriptRunner)
+  const result = scripts.reduce((r, script) => {
+    // Compile a list of ordered scripts. Once ALL the dependencies for a script are already in the orderedScripts
+    // then the script can be added to the ordered scripts.
+    if (allScriptDependenciesInArray(r.ordered, script.dependencies)) {
+      r.ordered.push(script)
+    } else {
+      r.remaining.push(script)
+    }
+    return r
+  }, initialValue)
+
+  return orderScripts(result.remaining, result.ordered)
 }
 
-function getScriptFiles (dirPath) {
-  const fullPath = path.resolve(dirPath)
-  return fs.readdirSync(fullPath)
-    .filter((f) => /.sql/.test(f))
-    .map((f) => path.join(dirPath, f))
+function allScriptDependenciesInArray (array, dependencies) {
+  if (!Array.isArray(dependencies) || dependencies.length === 0) {
+    return true
+  }
+
+  return dependencies.every((dep) => array.some((s) => s.objectName === dep))
 }
 
-function createScriptRunner (db, replacements) {
-  return (scriptFile) => {
-    const sqlScript = loadAndBuildMigrationScript(scriptFile, replacements)
-    const baseName = path.basename(scriptFile, '.sql')
-    const batches = splitBatches(sqlScript)
+function createScriptRunner (db) {
+  return (script) => {
+    const baseName = path.basename(script.filePath, '.sql')
+    const batches = splitBatches(script.text)
     console.log(`Running database object script ${baseName}`)
     return Promise.each(batches, (batchText) => db.runRawQuery(batchText))
       .catch((error) => onMigrationScriptError(error, baseName))

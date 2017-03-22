@@ -1,26 +1,36 @@
-import fs from 'fs-extra'
+import Promise from 'bluebird'
 import path from 'path'
 import MigrationError from '../errors/MigrationError'
 
-export function loadAndBuildMigrationScript (scriptFile, replacements) {
+const fs = Promise.promisifyAll(require('fs-extra'))
+
+export function loadAndBuildMigrationScriptSync (scriptFile, replacements) {
   try {
-    const scriptText = loadMigrationScript(scriptFile)
+    const scriptText = loadMigrationScriptSync(scriptFile)
     return buildScript(scriptText, replacements)
   } catch (e) {
     throw new MigrationError('Failed to load migration script file', scriptFile, e)
   }
 }
 
-export function loadAndBuildScriptAsset (scriptName, replacements) {
+export function loadAndBuildMigrationScript (scriptFile, replacements) {
+  return loadMigrationScript(scriptFile)
+    .then((scriptText) => buildScript(scriptText, replacements))
+    .catch((error) => {
+      throw new MigrationError('Failed to load migration script file', scriptFile, error)
+    })
+}
+
+export function loadAndBuildScriptAssetSync (scriptName, replacements) {
   try {
-    const scriptText = loadScriptAsset(scriptName)
+    const scriptText = loadScriptAssetSync(scriptName)
     return buildScript(scriptText, replacements)
   } catch (e) {
     throw new MigrationError('Failed to load script asset file', scriptName, e)
   }
 }
 
-export function loadScriptAsset (scriptName) {
+export function loadScriptAssetSync (scriptName) {
   const filePath = path.resolve(__dirname, `../../assets/scripts/${scriptName}`)
   return fs.readFileSync(filePath, { encoding: 'utf8' })
 }
@@ -32,6 +42,11 @@ export function splitBatches (scriptText) {
 }
 
 function loadMigrationScript (scriptFile) {
+  const filePath = path.resolve(scriptFile)
+  return fs.readFileAsync(filePath, { encoding: 'utf8' })
+}
+
+function loadMigrationScriptSync (scriptFile) {
   const filePath = path.resolve(scriptFile)
   return fs.readFileSync(filePath, { encoding: 'utf8' })
 }

@@ -2,7 +2,7 @@ import Promise from 'bluebird'
 import path from 'path'
 import { onMigrationScriptError } from '../helpers/migration'
 import {
-  loadAndBuildMigrationScript,
+  loadAndBuildMigrationScriptSync,
   splitBatches
 } from '../helpers/script'
 
@@ -37,7 +37,7 @@ function getMigrationsToRun (db, migrations) {
 function createMigrationRunner (db, migrationsPath, replacements) {
   return (migration) => {
     const scriptFile = path.join(migrationsPath, `${migration}.sql`)
-    const sqlScript = loadAndBuildMigrationScript(scriptFile, replacements)
+    const sqlScript = loadAndBuildMigrationScriptSync(scriptFile, replacements)
     const batches = splitBatches(sqlScript)
     console.log(`Running migration ${migration}`)
     return Promise.each(batches, (batchText) => db.runRawQuery(batchText))
