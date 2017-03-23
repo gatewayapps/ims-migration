@@ -14,13 +14,13 @@ import {
 import { runPostDeploymentScripts } from './postDeployment'
 import { MigrationStatus } from '../constants'
 
-export function publish (config) {
-  const migrationConfig = loadConfig(config.migrationFile)
-  const replacements = buildReplacements(config)
+export function publish (options) {
+  const migrationConfig = loadConfig(options.migrationFile)
+  const replacements = buildReplacements(options)
 
   logger.status('Starting database migration')
-  return createDatabaseIfNotExists(config.database, replacements)
-    .then(() => createDatabaseContext(config.database))
+  return createDatabaseIfNotExists(options.database, replacements)
+    .then(() => createDatabaseContext(options.database))
     .then((db) => { return db.context.sync().then(() => db) })
     .then((db) => {
       return db.context.transaction((trx) => {
@@ -36,15 +36,15 @@ export function publish (config) {
     })
 }
 
-function buildReplacements (config) {
+function buildReplacements (options) {
   const replacements = {
-    DatabaseName: config.database.databaseName,
-    PackageLoginUsername: config.packageLogin.username,
-    PackageLoginPassword: config.packageLogin.password
+    DatabaseName: options.database.databaseName,
+    PackageLoginUsername: options.packageLogin.username,
+    PackageLoginPassword: options.packageLogin.password
   }
 
-  if (typeof config.replacements === 'object') {
-    Object.assign(replacements, config.replacements)
+  if (typeof options.replacements === 'object') {
+    Object.assign(replacements, options.replacements)
   }
 
   return replacements
@@ -58,8 +58,9 @@ function onMigrationSuccess (db) {
   return db.MigrationsLog.create({
     status: MigrationStatus.Success,
     message: 'Migration completed successfully.'
-  }).then(() => {
+  }).then((migrationLog) => {
     logger.success('Database migration complete')
+    return migrationLog
   })
 }
 

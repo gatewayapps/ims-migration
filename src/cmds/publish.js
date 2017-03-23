@@ -40,6 +40,11 @@ export const builder = {
   verbose: {
     alias: [ 'v' ],
     boolean: true
+  },
+  replacements: {
+    alias: [ 'r' ],
+    array: true,
+    desc: 'Custom replacement tokens should be provide in the format <key>=<value>'
   }
 }
 
@@ -58,8 +63,28 @@ export function handler (argv) {
       username: argv.packageLogin,
       password: argv.packagePassword
     },
-    replacements: {},
-    logging: argv.verbose
+    replacements: prepareReplacements(argv.replacements)
   }
   publish(publishConfig)
+}
+
+function prepareReplacements (arrReplacements) {
+  const replacements = {}
+
+  if (Array.isArray(arrReplacements)) {
+    arrReplacements.forEach((replacement) => {
+      const idx = replacement.indexOf('=')
+      let key, value
+      if (idx > 0) {
+        key = replacement.substring(0, idx)
+        value = replacement.substring(idx + 1)
+      } else {
+        key = replacement
+        value = ''
+      }
+      replacements[key] = value
+    })
+  }
+
+  return replacements
 }
