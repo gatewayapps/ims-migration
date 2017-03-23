@@ -1,6 +1,6 @@
 {
   "name": "ims-migration",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "Utility for orchestraing database migrations",
   "babel": {
     "presets": [
