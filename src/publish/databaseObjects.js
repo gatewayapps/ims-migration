@@ -56,7 +56,7 @@ function resolveScriptDependencies (functions, procedures, views) {
   // identify the dependent objects for each script
   allScripts.forEach((script) => {
     script.dependencies = objectNames.filter((oName) => {
-      return script.objectName !== oName && new RegExp(`\\.?\\[?${oName}`).test(script.text)
+      return script.objectName !== oName && new RegExp(`\\b${oName}\\b`, 'i').test(script.text)
     })
   })
   return orderScripts(allScripts)
