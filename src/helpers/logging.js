@@ -7,13 +7,13 @@ export default {
   success
 }
 
-const errorText = clc.red.bold
+const errorText = clc.red
 const dateText = clc.blue
 const successText = clc.green
 
 export function error (...args) {
-  const errorArgs = args.map((a) => errorText(a))
-  console.log(errorText(new Date().toISOString()), ':', ...errorArgs)
+  const errorArgs = args.map((a) => errorText(JSON.stringify(a, null, 2)))
+  console.log(errorText(new Date().toISOString()), errorText(':'), ...errorArgs)
 }
 
 export function log (...args) {

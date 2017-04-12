@@ -65,7 +65,7 @@ function onMigrationSuccess (db) {
 }
 
 function onMigrationFailure (db, error) {
-  logger.error(error)
+  logger.error(error.message)
   return db.MigrationsLog.create({
     status: MigrationStatus.Failed,
     message: error.message,
