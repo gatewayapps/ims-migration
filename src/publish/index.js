@@ -40,7 +40,9 @@ function buildReplacements (options) {
   const replacements = {
     DatabaseName: options.database.databaseName,
     PackageLoginUsername: options.packageLogin.username,
-    PackageLoginPassword: options.packageLogin.password
+    PackageLoginPassword: options.packageLogin.password,
+    PublisherUsername: options.database.username,
+    PublisherPassword: options.database.password
   }
 
   if (typeof options.replacements === 'object') {
