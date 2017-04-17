@@ -148,7 +148,7 @@ The publish process perform the following steps agains the database
 
 1. Creates the database if it does not exist on the server
 2. Ensures the ```__Migrations``` and ```__MigrationsLog``` tables are in the target database
-3. Creates the package login user account if it does not exist
+3. Creates the package login user account if it does not exist otherwise, updates the password for the package login if the password is not blank
 4. Runs the ```config.preDeploy``` scripts on the database
 5. Runs the ```config.migrations``` on the database. Migrations that run successfully create a record in the ```__Migrations``` table
 6. Runs all the ```.sql``` files located in ```config.paths.functions```, ```config.paths.procedures```, and ```config.paths.views``` on the database
