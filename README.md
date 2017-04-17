@@ -38,6 +38,8 @@ Script files processed prior to being applied to the database. In your scripts y
 | DatabaseName         | Database name passed in -d or --database                        |
 | PackageLoginUsername | Login name for the package user passed in -l or --packageLogin  |
 | PackageLoginPassword | Password for the package user passed in -x or --packagePassword |
+| PublisherUsername    | Login name passed in -u or --user                               |
+| PublisherPassword    | Password passed in -p or --password                             |
 
 For passing custom tokens see [Publish CLI](#publish-cli) and [Publishing from node](#publishing-from-node).
 
