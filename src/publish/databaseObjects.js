@@ -23,6 +23,11 @@ export function runDatabaseObjects (db, migrationConfig, replacements) {
 
 function getScriptFiles (dirPath, replacements) {
   const fullPath = path.resolve(dirPath)
+
+  if (!fs.existsSync(fullPath)) {
+    return Promise.resolve([])
+  }
+
   return fs.readdirAsync(fullPath)
     .filter((f) => /.sql/.test(f))
     .map((f) => {
