@@ -33,13 +33,13 @@ This will create the following directories and files.
 Script files processed prior to being applied to the database. In your scripts you can include a token name inside double curly braces (ex: ```{{DatabaseName}}```). Any instances of this pattern in your script are replaced with the value at runtime. By default, a few replacement tokens are available and custom replacements can be provided when running publish.
 
 ### Default Replacement Tokens
-| Token Name           | Description                                                     |
-| -------------------- | --------------------------------------------------------------- |
-| DatabaseName         | Database name passed in -d or --database                        |
-| PackageLoginUsername | Login name for the package user passed in -l or --packageLogin  |
-| PackageLoginPassword | Password for the package user passed in -x or --packagePassword |
-| PublisherUsername    | Login name passed in -u or --user                               |
-| PublisherPassword    | Password passed in -p or --password                             |
+| Token Name           | Description                                                                                                             |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| DatabaseName         | Database name passed in -d or --database                                                                                |
+| PackageLoginUsername | Login name for the package user passed in -l or --packageLogin (May be an empty string if not provided during publish)  |
+| PackageLoginPassword | Password for the package user passed in -x or --packagePassword (May be an empty string if not provided during publish) |
+| PublisherUsername    | Login name passed in -u or --user                                                                                       |
+| PublisherPassword    | Password passed in -p or --password                                                                                     |
 
 For passing custom tokens see [Publish CLI](#publish-cli) and [Publishing from node](#publishing-from-node).
 
