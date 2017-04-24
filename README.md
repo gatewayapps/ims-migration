@@ -130,8 +130,8 @@ Options:
   -d, --database           (required) Name of the database
   -u, --user               (required) Admin user for connecting to the SQL Server
   -p, --password           (required) Admin user password
-  -l, --packageLogin       (required) IMS package login user, will be created if it doesn't exist
-  -x, --packagePassword    (required) IMS package login password, only used when creating the package login
+  -l, --packageLogin       IMS package login user, will be created if it doesn't exist
+  -x, --packagePassword    IMS package login password, only used when creating the package login (requires that packageLogin also be set)
   -v, --verbose            Prints SQL commands being executed to the console
   -r, --replacements       Custom replacements to be merged with the default replacements. Should be in the format `key=value`
                            May be specified multiple times to pass an array of custom replacements

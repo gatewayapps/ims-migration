@@ -31,12 +31,12 @@ export const builder = {
   },
   packageLogin: {
     alias: [ 'l' ],
-    default: '',
-    implies: 'packagePassword'
+    default: ''
   },
   packagePassword: {
+    alias: [ 'x' ],
     default: '',
-    alias: [ 'x' ]
+    implies: 'packageLogin'
   },
   verbose: {
     alias: [ 'v' ],
