@@ -34,13 +34,16 @@ export function publish (options) {
       })
       .catch((error) => onMigrationFailure(db, error))
     })
+    .catch((error) => {
+      logger.error(error)
+    })
 }
 
 function buildReplacements (options) {
   const replacements = {
     DatabaseName: options.database.databaseName,
-    PackageLoginUsername: options.packageLogin.username,
-    PackageLoginPassword: options.packageLogin.password,
+    PackageLoginUsername: options.packageLogin.username || '',
+    PackageLoginPassword: options.packageLogin.password || '',
     PublisherUsername: options.database.username,
     PublisherPassword: options.database.password
   }

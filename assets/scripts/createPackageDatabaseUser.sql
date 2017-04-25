@@ -1,12 +1,17 @@
-IF NOT EXISTS (
-	SELECT 1 FROM sys.database_principals WHERE name = N'{{PackageLoginUsername}}'
-)
+IF N'{{PackageLoginUsername}}' <> N''
 BEGIN
 
-	PRINT 'Creating database user {{PackageLoginUsername}}...';
+	IF NOT EXISTS (
+		SELECT 1 FROM sys.database_principals WHERE name = N'{{PackageLoginUsername}}'
+	)
+	BEGIN
 
-	CREATE USER [{{PackageLoginUsername}}] FOR LOGIN [{{PackageLoginUsername}}];
+		PRINT 'Creating database user {{PackageLoginUsername}}...';
 
-	ALTER ROLE [db_owner] ADD MEMBER [{{PackageLoginUsername}}];
+		EXEC('CREATE USER [{{PackageLoginUsername}}] FOR LOGIN [{{PackageLoginUsername}}];');
+
+		EXEC('ALTER ROLE [db_owner] ADD MEMBER [{{PackageLoginUsername}}];');
+
+	END
 
 END
