@@ -5,17 +5,14 @@ import { loadConfig } from '../helpers/config'
 import logger from '../helpers/logging'
 
 export function archive (options) {
-  const archive = archiver('zip', {
-    zlib: { level: 9 }
-  })
+  const archive = archiver('zip')
 
   const migrationConfig = loadConfig(options.migrationFile)
   // Create the output file stream, overwrites any existing file
   logger.log(`Creating output file: ${options.outputFile}`)
   const output = fs.createWriteStream(options.outputFile, { flags: 'w' })
   output.on('close', function () {
-    console.log(archive.pointer() + ' total bytes')
-    console.log('archiver has been finalized and the output file descriptor has closed.')
+    logger.log(archive.pointer() + ' total bytes')
   })
 
 // good practice to catch warnings (ie stat failures and other non-blocking errors)
@@ -28,6 +25,7 @@ export function archive (options) {
     }
   })
   archive.on('error', (err) => {
+    logger.error(err)
     if (err.code === 'ENOENT') {
       // log warning
     } else {
@@ -37,17 +35,24 @@ export function archive (options) {
   })
   archive.pipe(output)
 
-  let newMigration = {}
-  Object.assign(newMigration, migrationConfig)
-
+  let newMigration = Object.assign({}, migrationConfig)
   const keys = Object.keys(newMigration.paths)
   for (var i = 0; i < keys.length; i++) {
     const key = keys[i]
     const parts = newMigration.paths[key].split(/[/\\]+/)
-    newMigration.paths[key] = parts[parts.length - 1]
+    const fullDirName = migrationConfig.paths[key]
+    const dirName = parts[parts.length - 1]
+    newMigration.paths[key] = dirName
+
+    if (!fs.existsSync(fullDirName)) {
+      fs.mkdirSync(fullDirName)
+    }
+    if (fs.existsSync(fullDirName)) {
+      logger.log(`Adding ${fullDirName} as ${dirName}`)
+      archive.directory(fullDirName, dirName)
+    }
   }
   archive.append(yaml.safeDump(newMigration), { name: 'migration.yaml' })
-  archive.directory('src/data/', false)
   logger.log('Archive complete.  Finalizing')
   archive.finalize()
 }
