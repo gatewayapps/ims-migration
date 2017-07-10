@@ -1,6 +1,6 @@
 {
   "name": "ims-migration",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Utility for orchestrating database migrations",
   "babel": {
     "presets": [
@@ -41,6 +41,7 @@
     "js-yaml": "^3.8.2",
     "sequelize": "^3.30.2",
     "tedious": "^1.15.0",
+    "upath": "^1.0.0",
     "yargs": "^7.0.2"
   }
 }

@@ -1,4 +1,5 @@
 import archiver from 'archiver'
+const upath = require('upath')
 import os from 'os'
 import fs from 'fs'
 import yaml from 'js-yaml'
@@ -43,9 +44,8 @@ export function archive (options) {
     const parts = newMigration.paths[key].split(/[/\\]+/)
 
     // Normalize path names for current platform
-    const fullDirName = os.platform() === 'win32'
-    ? migrationConfig.paths[key]
-    : migrationConfig.paths[key].replace('\\', '/')
+    
+    const fullDirName = upath.normalize(migrationConfig.paths[key])
 
     const dirName = parts[parts.length - 1]
     newMigration.paths[key] = dirName
