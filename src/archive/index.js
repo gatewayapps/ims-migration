@@ -1,4 +1,5 @@
 import archiver from 'archiver'
+import os from 'os'
 import fs from 'fs'
 import yaml from 'js-yaml'
 import { loadConfig } from '../helpers/config'
@@ -40,7 +41,12 @@ export function archive (options) {
   for (var i = 0; i < keys.length; i++) {
     const key = keys[i]
     const parts = newMigration.paths[key].split(/[/\\]+/)
-    const fullDirName = migrationConfig.paths[key]
+
+    // Normalize path names for current platform
+    const fullDirName = os.platform() === 'win32'
+    ? migrationConfig.paths[key]
+    : migrationConfig.paths[key].replace('\\', '/')
+
     const dirName = parts[parts.length - 1]
     newMigration.paths[key] = dirName
 
