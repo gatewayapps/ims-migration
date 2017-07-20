@@ -11,25 +11,37 @@ import logger from '../helpers/logging'
 
 export function createScalarFunction (name) {
   let template = loadTemplate(Templates.ScalarFunction)
-  template = template.replace(TemplateReplacements.ObjectName, name)
+  const nameObj = parseName(name)
+  template = template
+    .replace(TemplateReplacements.SchemaName, nameObj.schemaName)
+    .replace(TemplateReplacements.ObjectName, nameObj.objectName)
   writeFile(`${name}.sql`, TypePaths.Function, template)
 }
 
 export function createTableFunction (name) {
   let template = loadTemplate(Templates.TableFunction)
-  template = template.replace(TemplateReplacements.ObjectName, name)
+  const nameObj = parseName(name)
+  template = template
+    .replace(TemplateReplacements.SchemaName, nameObj.schemaName)
+    .replace(TemplateReplacements.ObjectName, nameObj.objectName)
   writeFile(`${name}.sql`, TypePaths.Function, template)
 }
 
 export function createProcedure (name) {
   let template = loadTemplate(Templates.Procedure)
-  template = template.replace(TemplateReplacements.ObjectName, name)
+  const nameObj = parseName(name)
+  template = template
+    .replace(TemplateReplacements.SchemaName, nameObj.schemaName)
+    .replace(TemplateReplacements.ObjectName, nameObj.objectName)
   writeFile(`${name}.sql`, TypePaths.Procedure, template)
 }
 
 export function createView (name) {
   let template = loadTemplate(Templates.View)
-  template = template.replace(TemplateReplacements.ObjectName, name)
+  const nameObj = parseName(name)
+  template = template
+    .replace(TemplateReplacements.SchemaName, nameObj.schemaName)
+    .replace(TemplateReplacements.ObjectName, nameObj.objectName)
   writeFile(`${name}.sql`, TypePaths.View, template)
 }
 
@@ -57,6 +69,23 @@ export function createMigration (name) {
 
 function getScriptName (name) {
   return `${Date.now()}-${name}`
+}
+
+function parseName (name) {
+  const parts = name.split('.')
+  if (parts.length > 1) {
+    const schemaName = parts.shift()
+    const objectName = parts.join('.')
+    return {
+      schemaName,
+      objectName
+    }
+  } else {
+    return {
+      schemaName: 'dbo',
+      objectName: name
+    }
+  }
 }
 
 function loadTemplate (templateName) {

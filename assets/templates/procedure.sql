@@ -1,12 +1,13 @@
 IF EXISTS (
-  SELECT 1 FROM sys.procedures p WHERE p.name = '{{ObjectName}}'
+  SELECT 1 FROM sys.procedures p
+  WHERE p.name = '{{ObjectName}}' AND o.schema_id = SCHEMA_ID('{{SchemaName}}')
 )
 BEGIN
-  DROP PROCEDURE [dbo].[{{ObjectName}}]
+  DROP PROCEDURE [{{SchemaName}}].[{{ObjectName}}]
 END
 GO
 
-CREATE PROCEDURE [dbo].[{{ObjectName}}]
+CREATE PROCEDURE [{{SchemaName}}].[{{ObjectName}}]
 (
   @i_param1 INT
 )
