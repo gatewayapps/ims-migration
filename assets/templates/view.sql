@@ -1,6 +1,6 @@
 IF EXISTS (
   SELECT 1 FROM sys.views v
-  WHERE v.name = '{{ObjectName}}' AND o.schema_id = SCHEMA_ID('{{SchemaName}}')
+  WHERE v.name = '{{ObjectName}}' AND v.schema_id = SCHEMA_ID('{{SchemaName}}')
 )
 BEGIN
   DROP VIEW [{{SchemaName}}].[{{ObjectName}}]

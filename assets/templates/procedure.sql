@@ -1,6 +1,6 @@
 IF EXISTS (
   SELECT 1 FROM sys.procedures p
-  WHERE p.name = '{{ObjectName}}' AND o.schema_id = SCHEMA_ID('{{SchemaName}}')
+  WHERE p.name = '{{ObjectName}}' AND p.schema_id = SCHEMA_ID('{{SchemaName}}')
 )
 BEGIN
   DROP PROCEDURE [{{SchemaName}}].[{{ObjectName}}]
