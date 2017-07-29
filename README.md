@@ -60,12 +60,17 @@ Each migration script is only run against a database one time. Therefore, migrat
 ### Functions
 Functions are used to create either scalar or table valued user defined functions. The functions will be run each time the migration is published. By default it uses the [scalar function template](https://github.com/gatewayapps/ims-migration/tree/master/assets/templates/function-scalar.sql) for the generated file, but you can add ```-t table``` to use the [table function template](https://github.com/gatewayapps/ims-migration/tree/master/assets/templates/function-table.sql).
 
+By default, functions are created in the `dbo` schema. To specify a different schema prefix the function name with `{schemaName}.`.
+
 ```bash
 # Scalar Function
 ims-migration create function my-scalar-function
 
 # Table Valued Function
 ims-migration create function my-table-function -t table
+
+# Function in a "mySchema" instead of "dbo" schema
+ims-migration create function mySchema.my-scalar-function
 ```
 
 This will create a files named ```my-scalar-function.sql``` and ```my-table-function``` in [directory]/functions.
@@ -81,6 +86,12 @@ ims-migration create procedure my-procedure-name
 
 This will create a file named ```my-procedure-name.sql``` in [directory]/procedures. The file will use the [procedure template](https://github.com/gatewayapps/ims-migration/tree/master/assets/templates/procedure.sql)
 
+By default, procedures are created in the `dbo` schema. To specify a different schema prefix the procedure name with `{schemaName}.`.
+
+```bash
+ims-migration create procedure mySchema.my-procedure-name
+```
+
 The procedure scripts are re-run every time the migration is published. The scripts should be written in a way that supports dropping and recreating the procedure if it exists. The provided templates provide this setup for you.
 
 ### Views
@@ -91,6 +102,12 @@ ims-migration create view my-view
 ```
 
 This will create a file named ```my-view.sql``` in [directory]/views. The file will use the [view template](https://github.com/gatewayapps/ims-migration/tree/master/assets/templates/view.sql)
+
+By default, views are created in the `dbo` schema. To specify a different schema prefix the view name with `{schemaName}.`.
+
+```bash
+ims-migration create view mySchema.my-view
+```
 
 The view scripts are re-run every time the migration is published. The scripts should be written in a way that supports dropping and recreating the view if it exists. The provided templates provide this setup for you.
 
