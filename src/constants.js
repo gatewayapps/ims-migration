@@ -11,6 +11,7 @@ export const Scripts = {
 
 export const TemplateReplacements = {
   ObjectName: /{{ObjectName}}/g,
+  SchemaName: /{{SchemaName}}/g,
   ScriptName: /{{ScriptName}}/g
 }
 

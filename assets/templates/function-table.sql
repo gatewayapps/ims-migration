@@ -1,12 +1,14 @@
 IF EXISTS (
-  SELECT 1 FROM sys.objects o WHERE o.name = '{{ObjectName}}' AND o.type IN ('FN', 'IF')
+  SELECT 1 FROM sys.objects o
+  WHERE o.name = '{{ObjectName}}' AND o.schema_id = SCHEMA_ID('{{SchemaName}}')
+  AND o.type IN ('FN', 'IF', 'TF', 'FT')
 )
 BEGIN
-  DROP FUNCTION [dbo].[{{ObjectName}}]
+  DROP FUNCTION [{{SchemaName}}].[{{ObjectName}}]
 END
 GO
 
-CREATE FUNCTION [dbo].[{{ObjectName}}]
+CREATE FUNCTION [{{SchemaName}}].[{{ObjectName}}]
 (
   @i_param1 INT
 )
