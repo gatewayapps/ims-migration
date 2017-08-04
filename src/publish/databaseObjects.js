@@ -35,6 +35,7 @@ function getScriptFiles (dirPath, replacements) {
       return loadAndBuildMigrationScript(fullFilePath, replacements)
         .then((scriptText) => {
           const script = {
+            schemaName: undefined,
             objectName: undefined,
             filePath: fullFilePath,
             text: scriptText,
@@ -47,6 +48,8 @@ function getScriptFiles (dirPath, replacements) {
           if (match && match.length >= 3) {
             const nameParts = match[2].split('.')
             script.objectName = nameParts.pop().trim().replace('[', '').replace(']', '')
+            let schemaName = nameParts.pop() || 'dbo'
+            script.schemaName = schemaName.trim().replace('[', '').replace(']', '')
           }
           return script
         })
@@ -56,12 +59,25 @@ function getScriptFiles (dirPath, replacements) {
 function resolveScriptDependencies (functions, procedures, views) {
   const allScripts = functions.concat(procedures).concat(views)
   logger.status('Resolving script dependencies')
-  const objectNames = allScripts.filter((s) => s.objectName).map((s) => s.objectName)
+  const objectNames = allScripts.filter((s) => s.objectName).map((s) => {
+    return {
+      schemaName: s.schemaName,
+      objectName: s.objectName
+    }
+  })
 
   // identify the dependent objects for each script
   allScripts.forEach((script) => {
     script.dependencies = objectNames.filter((oName) => {
-      return script.objectName !== oName && new RegExp(`\\b${oName}\\b`, 'i').test(script.text)
+      if (script.objectName === oName.objectName) {
+        return false
+      }
+
+      if (oName.schemaName && oName.schemaName.toLowerCase() === 'dbo') {
+        return new RegExp(`\\b${oName.schemaName}\\]*\\.\\[*${oName.objectName}\\b`, 'i').test(script.text)
+      } else {
+        return new RegExp(`\\b${oName.objectName}\\b`, 'i').test(script.text)
+      }
     })
   })
   return orderScripts(allScripts)
@@ -96,7 +112,7 @@ function allScriptDependenciesInArray (array, dependencies) {
     return true
   }
 
-  return dependencies.every((dep) => array.some((s) => s.objectName === dep))
+  return dependencies.every((dep) => array.some((s) => s.schemaName === dep.schemaName && s.objectName === dep.objectName))
 }
 
 function createScriptRunner (db) {
