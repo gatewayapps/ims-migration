@@ -36,6 +36,7 @@ export function publish (options) {
     })
     .catch((error) => {
       logger.error(error)
+      throw (error)
     })
 }
 
@@ -70,11 +71,12 @@ function onMigrationSuccess (db) {
 }
 
 function onMigrationFailure (db, error) {
-  logger.error(error.message)
   return db.MigrationsLog.create({
     status: MigrationStatus.Failed,
     message: error.message,
     migration: error.scriptName,
     details: JSON.stringify(error)
+  }).then(() => {
+    throw (error)
   })
 }
