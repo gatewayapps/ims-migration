@@ -46,6 +46,10 @@ export const builder = {
     alias: [ 'r' ],
     array: true,
     desc: 'Custom replacement tokens should be provide in the format <key>=<value>'
+  },
+  force: {
+    alias: [ 'f' ],
+    boolean: true
   }
 }
 
@@ -64,7 +68,8 @@ export function handler (argv) {
       username: argv.packageLogin,
       password: argv.packagePassword
     },
-    replacements: prepareReplacements(argv.replacements)
+    replacements: prepareReplacements(argv.replacements),
+    force: argv.force || false
   }
   publish(publishConfig)
 }
