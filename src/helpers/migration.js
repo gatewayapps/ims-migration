@@ -16,13 +16,18 @@ export function createMigrationHash (migrationConfig) {
     .map((key) => {
       return folderHash.hashElement(migrationConfig.paths[key], { algo: HASH_ALGO, encoding: HASH_ENCODING })
     })
-  return Promise.all(promises).then((hashes) => {
-    const hash = crypto.createHash(HASH_ALGO)
-    hashes.forEach((child) => {
-      if (child.hash) {
-        hash.write(child.hash)
-      }
+
+  if (promises.length === 0) {
+    return Promise.resolve('')
+  } else {
+    return Promise.all(promises).then((hashes) => {
+      const hash = crypto.createHash(HASH_ALGO)
+      hashes.forEach((child) => {
+        if (child.hash) {
+          hash.write(child.hash)
+        }
+      })
+      return hash.digest(HASH_ENCODING)
     })
-    return hash.digest(HASH_ENCODING)
-  })
+  }
 }
