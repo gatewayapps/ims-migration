@@ -152,6 +152,7 @@ Options:
   -v, --verbose            Prints SQL commands being executed to the console
   -r, --replacements       Custom replacements to be merged with the default replacements. Should be in the format `key=value`
                            May be specified multiple times to pass an array of custom replacements
+  -f, --force              Forces the migration to publish even if the hash of the migration files matches the last successful execution
 
 Simple Example:
 

@@ -8,14 +8,19 @@ export default function (config, databaseNameOverride) {
     Sequelize.cls = config.cls
   }
 
-  var dbName = databaseNameOverride || config.databaseName
+  let dbName = databaseNameOverride || config.databaseName
+  let instanceName
+
+  if (config.instanceName && config.instanceName.toUpperCase() !== 'MSSQLSERVER') {
+    instanceName = config.instanceName
+  }
 
   if (!instances[dbName]) {
     const sequelizeConfig = {
       host: config.server,
       dialect: 'mssql',
       dialectOptions: {
-        instanceName: config.instanceName,
+        instanceName: instanceName,
         requestTimeout: 300000
       },
       pool: {
