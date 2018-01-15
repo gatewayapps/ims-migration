@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import folderHash from 'folder-hash'
+import fs from 'fs'
 import MigrationError from '../errors/MigrationError'
 
 const HASH_ALGO = 'sha256'
@@ -10,9 +11,11 @@ export function onMigrationScriptError (error, scriptName) {
 }
 
 export function createMigrationHash (migrationConfig) {
-  const promises = Object.keys(migrationConfig.paths).map((key) => {
-    return folderHash.hashElement(migrationConfig.paths[key], { algo: HASH_ALGO, encoding: HASH_ENCODING })
-  })
+  const promises = Object.keys(migrationConfig.paths)
+    .filter((key) => fs.existsSync(migrationConfig.paths[key]))
+    .map((key) => {
+      return folderHash.hashElement(migrationConfig.paths[key], { algo: HASH_ALGO, encoding: HASH_ENCODING })
+    })
   return Promise.all(promises).then((hashes) => {
     const hash = crypto.createHash(HASH_ALGO)
     hashes.forEach((child) => {
