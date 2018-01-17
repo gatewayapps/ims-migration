@@ -28,22 +28,24 @@ export function publish (options) {
         .then((migrationHash) => {
           return getLastMigrationSuccess(db)
             .then((lastSuccess) => {
-              // Verify if the migration has been successfully run before
-              if (options.force === true || !lastSuccess || lastSuccess.migration !== migrationHash) {
-                return db.context.transaction((trx) => {
-                  return createPackageLoginIfNotExists(db, replacements)
-                    .then(() => createPackageDatabaseUserIfNotExists(db, replacements))
-                    .then(() => runPreDeploymentScripts(db, migrationConfig, replacements))
-                    .then(() => runMigrations(db, migrationConfig, replacements))
-                    .then(() => runDatabaseObjects(db, migrationConfig, replacements))
-                    .then(() => runPostDeploymentScripts(db, migrationConfig, replacements))
-                    .then(() => onMigrationSuccess(db, migrationHash))
-                })
-                .catch((error) => onMigrationFailure(db, error))
-              } else {
-                logger.success('No changes made, all migration files have previously been published to the database. Rerun with --force option reapply the publish')
-                return lastSuccess
-              }
+              return db.context.transaction((trx) => {
+                return createPackageLoginIfNotExists(db, replacements)
+                  .then(() => createPackageDatabaseUserIfNotExists(db, replacements))
+                  .then(() => {
+                    // Verify if the migration has been successfully run before
+                    if (options.force === true || !lastSuccess || lastSuccess.migration !== migrationHash) {
+                      return runPreDeploymentScripts(db, migrationConfig, replacements)
+                        .then(() => runMigrations(db, migrationConfig, replacements))
+                        .then(() => runDatabaseObjects(db, migrationConfig, replacements))
+                        .then(() => runPostDeploymentScripts(db, migrationConfig, replacements))
+                        .then(() => onMigrationSuccess(db, migrationHash))
+                    } else {
+                      logger.success('No changes made, all migration files have previously been published to the database. Rerun with --force option reapply the publish')
+                      return lastSuccess
+                    }
+                  })
+              })
+              .catch((error) => onMigrationFailure(db, error))
             })
         })
     })
