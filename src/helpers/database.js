@@ -5,7 +5,8 @@ const instances = {}
 
 export default function (config, databaseNameOverride) {
   if (config.cls) {
-    Sequelize.cls = config.cls
+    //Sequelize.cls = config.cls
+    Sequelize.useCLS(config.cls)
   }
 
   let dbName = databaseNameOverride || config.databaseName
