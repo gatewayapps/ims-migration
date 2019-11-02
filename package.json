@@ -40,7 +40,7 @@
     "folder-hash": "^1.1.2",
     "fs-extra": "^2.1.2",
     "js-yaml": "^3.8.2",
-    "sequelize": "^4.43.1",
+    "sequelize": "^5.15.1",
     "tedious": "^1.15.0",
     "upath": "^1.0.0",
     "yargs": "^7.0.2"
